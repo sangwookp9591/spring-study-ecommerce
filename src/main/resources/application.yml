@@ -1,0 +1,30 @@
+# 모든 환경에서 공통으로 사용하는 설정
+spring:
+    application:
+        name: ecommerce-platform # 애플리케이션 이름
+
+    # JPA 설정
+    jpa:
+        open-in-view: false # OSIV 비활성화 (성능 향상)
+        properties:
+            hibernate:
+                format_sql: true # SQL을 보기 좋게 포맷팅
+                default_batch_fetch_size: 100 # N+1 문제 해결
+                # N+1 문제란?
+                # 상품 10개를 조회할 때 상품 1번 + 리뷰 10번 = 총 11번 쿼리
+                # batch_fetch_size를 설정하면 상품 1번 + 리뷰 1번 = 총 2번 쿼리
+
+# 서버 설정
+server:
+    port: 8080 # 서버 포트 (localhost:8080)
+    error:
+        include-message: always # 에러 응답에 메시지 포함
+        include-binding-errors: always # 입력값 검증 에러 포함
+
+# 로깅 설정
+logging:
+    pattern:
+        console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+        # 로그 출력 형식: 2025-01-01 12:00:00 [main] INFO  c.e.UserService - 사용자 생성 완료
+    level:
+        com.ecommerce: DEBUG # 우리 코드는 상세하게 로그 출력
