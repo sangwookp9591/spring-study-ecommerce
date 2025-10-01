@@ -1,0 +1,62 @@
+# Docker Compose 버전
+version: "3.8"
+
+# 실행할 서비스(컨테이너) 정의
+services:
+  # PostgreSQL 데이터베이스
+  postgres:
+    image: postgres:16-alpine
+    # image: Docker Hub에서 받아올 이미지
+    # postgres:16-alpine = PostgreSQL 16 버전 (경량화)
+
+    container_name: ecommerce-postgres
+    # 컨테이너 이름 (docker ps 할 때 이 이름으로 보임)
+
+    environment:
+      # 환경변수 설정
+      POSTGRES_DB: ecommerce_dev # 생성할 데이터베이스 이름
+      POSTGRES_USER: postgres # 사용자 이름
+      POSTGRES_PASSWORD: postgres123 # 비밀번호
+      # ⚠️ 실제 운영에서는 이렇게 하면 안 됨! (학습용)
+
+    ports:
+      - "5432:5432"
+      # 포트 매핑: "내컴퓨터포트:컨테이너포트"
+      # localhost:5432로 접속하면 컨테이너의 5432로 연결됨
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # 볼륨: 데이터를 컨테이너 밖에 저장
+      # 컨테이너 삭제해도 데이터는 유지됨
+      # 볼륨 안 쓰면? 컨테이너 삭제하면 모든 데이터 날아감!
+
+    restart: unless-stopped
+    # 재시작 정책
+    # unless-stopped: 수동으로 중지하지 않는 한 항상 재시작
+
+    healthcheck:
+      # 헬스체크: 컨테이너가 정상 작동하는지 확인
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      # pg_isready: PostgreSQL이 준비됐는지 확인하는 명령어
+      interval: 10s # 10초마다 확인
+      timeout: 5s # 5초 안에 응답 없으면 실패
+      retries: 5 # 5번 실패하면 unhealthy
+
+  # pgAdmin (PostgreSQL 관리 도구 - 선택사항)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ecommerce-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # 로그인 이메일
+      PGADMIN_DEFAULT_PASSWORD: admin # 로그인 비밀번호
+    ports:
+      - "5050:80" # http://localhost:5050 으로 접속
+    depends_on:
+      - postgres # postgres가 먼저 시작된 후 실행
+    restart: unless-stopped
+
+# 볼륨 정의
+volumes:
+  postgres_data:
+    # Docker가 관리하는 볼륨
+    # 실제 저장 위치: /var/lib/docker/volumes/...
