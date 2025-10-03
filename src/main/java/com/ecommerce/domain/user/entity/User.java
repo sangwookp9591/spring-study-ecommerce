@@ -16,7 +16,13 @@ import lombok.*;
  * - deletedAt: 탈퇴 시간
  */
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users", 
+    indexes = {
+        @Index(name = "idx_users_deleted", columnList = "deleted"),
+        @Index(name = "idx_users_created_at", columnList = "createdAt")
+    }
+    )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
