@@ -1,5 +1,7 @@
 # 모든 환경에서 공통으로 사용하는 설정
 spring:
+    profiles:
+        active: dev
     application:
         name: ecommerce-platform # 애플리케이션 이름
 
