@@ -1,5 +1,7 @@
 package com.ecommerce.domain.user.entity;
 
+import java.util.UUID;
+
 import com.ecommerce.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +26,15 @@ public class User extends BaseEntity {  // ← BaseEntity 상속!
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * 외부 노출용 ID (UUID)
+     * 
+     * - @PrePersist에서 자동 생성
+     * - Builder에서 명시적으로 지정도 가능 (테스트용)
+     */
+    @Column(unique = true, nullable = false, length = 36)
+    private String publicId;
     
     @Column(unique = true, nullable = false, length = 100)
     private String email;
@@ -37,6 +48,18 @@ public class User extends BaseEntity {  // ← BaseEntity 상속!
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
+    
+    /**
+     * 저장 직전 자동 실행
+     * 
+     * publicId가 null이면 자동 생성!
+     */
+    @PrePersist
+    public void prePersist() {
+        if (this.publicId == null) {
+            this.publicId = UUID.randomUUID().toString();
+        }
+    }
     
     // 비밀번호 변경
     public void updatePassword(String newPassword) {
