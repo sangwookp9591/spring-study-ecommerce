@@ -4,7 +4,6 @@ spring:
         active: dev
     application:
         name: ecommerce-platform # 애플리케이션 이름
-
     # JPA 설정
     jpa:
         open-in-view: false # OSIV 비활성화 (성능 향상)
@@ -15,6 +14,23 @@ spring:
                 # N+1 문제란?
                 # 상품 10개를 조회할 때 상품 1번 + 리뷰 10번 = 총 11번 쿼리
                 # batch_fetch_size를 설정하면 상품 1번 + 리뷰 1번 = 총 2번 쿼리
+    data:
+        redis:
+            host: localhost
+            port: 6379
+            password: # 비어있으면 패스워드 없음
+            timeout: 3000ms
+            lettuce:
+                pool:
+                    max-active: 8
+                    max-idle: 8
+                    min-idle: 0
+
+# JWT 설정
+jwt:
+    secret: ${JWT_SECRET:your-256-bit-secret-key-for-development-only-please-change-in-production-environment-this-is-very-important}
+    access-token-validity: 1800000 # 30분 (ms)
+    refresh-token-validity: 1209600000 # 14일 (ms)
 
 # 서버 설정
 server:
