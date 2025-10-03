@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findByEmailAndDeletedFalse(String email);
 
-        /**
+    /**
      * 이메일 존재 여부 확인
      * 
      * 생성되는 쿼리:
