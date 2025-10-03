@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email 이메일
      * @return Optional<User>
      */
-    Optional<User> findByEmailAndDeleetedFalse(String email);
+    Optional<User> findByEmailAndDeletedFalse(String email);
 
         /**
      * 이메일 존재 여부 확인
