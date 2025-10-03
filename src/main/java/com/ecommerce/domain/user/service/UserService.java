@@ -1,5 +1,7 @@
 package com.ecommerce.domain.user.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 회원가입
@@ -45,11 +48,16 @@ public class UserService {
             throw new DuplicateEmailException("이미 사용중인 이메일입니다.");
         }
 
-        //2. User 엔티티 생성
-        //비밀번호는 나중에 암호화! (지금은 평문으로 저장)
-        User user = request.toEntity(request.getPassword());
+    
+        // 2. 비밀번호 암호화 
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        log.debug("비밀번호 암호화 완료");
 
-        //3. DB저장 (publicId는 @PrePersist에서 자동 생성)
+        // 3. User 엔티티 생성
+        User user = request.toEntity(encodedPassword);
+
+        
+        // 4. DB저장 (publicId는 @PrePersist에서 자동 생성)
         User savedUser = userRepository.save(user);
 
 
