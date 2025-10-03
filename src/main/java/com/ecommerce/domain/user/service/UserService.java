@@ -101,4 +101,16 @@ public class UserService {
 
         return UserResponse.from((user));
     }
+
+    /**
+     * 비밀번호 검증
+     * 
+     * @param rawPassword 평문 비밀번호
+     * @param encodedPassword 암호화된 비밀번호
+     * @return 일치 여부
+     */
+    public boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
 }
