@@ -1,6 +1,5 @@
 package com.ecommerce.domain.user.entity;
 
-import com.ecommerce.domain.user.Role;
 import com.ecommerce.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
