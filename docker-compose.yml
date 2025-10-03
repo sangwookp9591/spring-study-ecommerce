@@ -29,7 +29,8 @@ services:
       # 볼륨: 데이터를 컨테이너 밖에 저장
       # 컨테이너 삭제해도 데이터는 유지됨
       # 볼륨 안 쓰면? 컨테이너 삭제하면 모든 데이터 날아감!
-
+    networks:
+      - ecommerce-network
     restart: unless-stopped
     # 재시작 정책
     # unless-stopped: 수동으로 중지하지 않는 한 항상 재시작
@@ -55,8 +56,24 @@ services:
       - postgres # postgres가 먼저 시작된 후 실행
     restart: unless-stopped
 
+  redis: # ✅ 추가!
+    image: redis:7-alpine
+    container_name: ecommerce-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecommerce-network
+    command: redis-server --appendonly yes
+
 # 볼륨 정의
 volumes:
   postgres_data:
+  redis_data:
     # Docker가 관리하는 볼륨
     # 실제 저장 위치: /var/lib/docker/volumes/...
+
+networks:
+  ecommerce-network:
+    driver: bridge
